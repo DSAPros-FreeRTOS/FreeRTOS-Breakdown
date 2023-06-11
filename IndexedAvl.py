@@ -151,17 +151,11 @@ class BST:
 
 tree = BST(50)
 
+#Download the excel file and paste the path of that file below also make sure that backslash is in / format instead of \
+
 df = pd.read_excel('C:/Users/viswa/AppData/Local/Programs/Python/Python310/Tools/DATA.xlsx', sheet_name=0)
 mylist = df['A'].tolist()
 
-# tree.check_if_self_balanced(tree.root)
-# print(tree.printpro(tree.root, ''))
-# tree.check_if_self_balanced(tree.root)
-# print(tree.printio(tree.root, ''))
-# print(tree.search(tree.root,10))
-#
-# print(tree.getvaluebyindex(tree.root, 2))
-# tree.getindexbyvalue(tree.root, 4)
 x=0
 while(x==0):
     print("-------------------------------------")
