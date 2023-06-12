@@ -12,10 +12,10 @@ Another functionality includes the ability to insert data through .xlsx files, w
 Run the extension as Administrator<br/>
 Click More Info if you don't get the permission to Run<br/>
 Click Run Anyway<br/>
-<h3>DATA.xlsx and DUPLICATE_DATA.xlsx</h3><br/>
+<h3>DATA.xlsx and DUPLICATE_DATA.xlsx</h3>
 Here we have an excel sheet whose column name is 'A' and has a data set of 50 elements. In Data.xlsx we have Data set of Unique elements ranging from 1-100
 and In Duplicate_Data.xlsx we have Data set of elements having Duplicates as well<br/>
-<h3>Unique Data.pdf and Duplicate Data.pdf</h3><br/>
+<h3>Unique Data.pdf and Duplicate Data.pdf</h3>
 This pdf provides the sample outputs you get while using Unique Data and Duplicate Data<br/>
 
 
