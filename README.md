@@ -6,4 +6,5 @@ It is menu driven program which provides various operations like Insertion , Del
 calculate the time taken by each operation <br/>
 Another functionality includes the ability to insert data through .xlsx files, which can be accomplished using the Pandas package.
 <h3>IndexAvl.cpp</h3> It is a C++ file containing the implementation of Indexed AVL Tree <br/>
-<h3>Simulator.py</h3> It is a python file which contains the python code for Indexed AVL Tree Simulator done using Tkinter Package
+<h3>Simulator.py</h3> It is a python file which contains the python code for Indexed AVL Tree Simulator done using Tkinter Package <br/>
+
