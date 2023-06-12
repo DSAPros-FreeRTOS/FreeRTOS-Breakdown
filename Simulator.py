@@ -101,6 +101,40 @@ class IndexedAVLTree:
         while current.left is not None:
             current = current.left
         return current
+    
+    def getIndexByValue(self, value):
+        return self._getIndexByValue(self.root, value)
+
+    def _getIndexByValue(self, node, value):
+        if node is None:
+            return None
+
+        if node.data == value:
+            left_size = self._getSize(node.left)
+            return left_size
+
+        if value < node.data:
+            return self._getIndexByValue(node.left, value)
+        else:
+            left_size = self._getSize(node.left)
+            right_size = self._getSize(node.right)
+            return left_size + 1 + self._getIndexByValue(node.right, value)
+
+    def getValueByIndex(self, index):
+        return self._getValueByIndex(self.root, index)
+
+    def _getValueByIndex(self, node, index):
+        if node is None:
+            return None
+
+        left_size = self._getSize(node.left)
+
+        if index == left_size:
+            return node.data
+        elif index < left_size:
+            return self._getValueByIndex(node.left, index)
+        else:
+            return self._getValueByIndex(node.right, index - left_size - 1)
 
     def findIndex(self, index):
         return self._findNodeByIndex(self.root, index)
@@ -214,6 +248,12 @@ class AVLTreeGUI:
 
         self.array_window = None  # Placeholder for the array display window
 
+        self.button_get_index = tk.Button(self.window, text="Get Index", command=self.getIndexByValue)
+        self.button_get_index.grid(row=2, column=0, padx=5, pady=5)
+
+        self.button_get_value = tk.Button(self.window, text="Get Value", command=self.getValueByIndex)
+        self.button_get_value.grid(row=2, column=1, padx=5, pady=5)
+
         
 
         self.window.mainloop()
@@ -278,6 +318,33 @@ class AVLTreeGUI:
             self.clearEntry()
         else:
             messagebox.showerror("Error", "Invalid input! Please enter a number.")
+    
+
+    def getIndexByValue(self):
+        value = self.entry_number.get()
+        if value.isnumeric():
+            value = int(value)
+            index = self.avl_tree.getIndexByValue(value)
+            if index is not None:
+                messagebox.showinfo("Get Index Result", f"The index of node with value {value} is {index}.")
+            else:
+                messagebox.showinfo("Get Index Result", f"No node found with value {value}.")
+            self.clearEntry()
+        else:
+            messagebox.showerror("Error", "Invalid input! Please enter a number.")
+    
+    def getValueByIndex(self):
+        index = self.entry_index.get()
+        if index.isnumeric():
+            index = int(index)
+            value = self.avl_tree.getValueByIndex(index)
+            if value is not None:
+                messagebox.showinfo("Get Value Result", f"The value at index {index} is {value}.")
+            else:
+                messagebox.showinfo("Get Value Result", f"No node found at index {index}.")
+            self.clearEntry()
+        else:
+            messagebox.showerror("Error", "Invalid input! Please enter a number.")
         
     
     def displayArray(self):
@@ -307,6 +374,9 @@ class AVLTreeGUI:
             array_text.configure(bg="white")
             array_text.insert(tk.END, f"Index {i}: {value}")
             array_text.pack()
+    
+
+
 
     def getTreeArray(self, node):
         if node is None:
@@ -319,4 +389,4 @@ class AVLTreeGUI:
 
 
 if __name__ == "__main__":
-    AVLTreeGUI()
+    AVLTreeGUI()`
