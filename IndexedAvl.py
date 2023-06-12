@@ -150,10 +150,11 @@ class BST:
 
 
 tree = BST(50)
+#Below are the url which connects the data excel files in git hub directly so inorder to use it just remove comments of which data you require
+url='https://raw.githubusercontent.com/DSAPros-FreeRTOS/FreeRTOS-Breakdown/Indexed-AVL-Project-Codes/DATA.xlsx'
+#url='https://raw.githubusercontent.com/DSAPros-FreeRTOS/FreeRTOS-Breakdown/Indexed-AVL-Project-Codes/DUPLICATE_DATA.xlsx'
 
-#Download the excel file and paste the path of that file below also make sure that backslash is in / format instead of \
-
-df = pd.read_excel('C:/Users/viswa/AppData/Local/Programs/Python/Python310/Tools/DATA.xlsx', sheet_name=0)
+df = pd.read_excel(url, sheet_name=0,engine='openpyxl')
 mylist = df['A'].tolist()
 
 x=0
@@ -207,5 +208,3 @@ while(x==0):
         print("Average Height Time:", height_time)
     x=1
     x=int(input("Press 0 to go back to menu or any integer to exit "))
-
-
