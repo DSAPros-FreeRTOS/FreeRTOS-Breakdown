@@ -1,12 +1,12 @@
 #include <iostream>
 using namespace std;
 
-typedef struct Node{
-    int data; //element to be stored
-    Node* left; //pointer to left child
-    Node* right; //pointer to right child
-    int height; //height of the element in the tree
-    int size; // Number of nodes in the subtree rooted at this node
+typedef struct Node {
+    int data;         // element to be stored
+    Node* left;       // pointer to the left child
+    Node* right;      // pointer to the right child
+    int height;       // height of the element in the tree
+    int size;         // number of nodes in the subtree rooted at this node
 
     Node(int data) {
         this->data = data;
@@ -15,29 +15,25 @@ typedef struct Node{
         height = 1;
         size = 1;
     }
-}Node;
+} Node;
 
 class IndexedAVLTree {
 private:
-    
     int size;
-    
 
-    //function which returns the height of a particular Node
+    // Function which returns the height of a particular Node
     int getHeight(Node* node) {
         if (node == nullptr)
             return 0;
         return node->height;
     }
 
-    // returns the no of subtrees which are rooted at this Node
+    // Returns the number of subtrees rooted at this Node
     int getSize(Node* node) {
         if (node == nullptr)
             return 0;
         return node->size;
     }
-    
-    
 
     void updateHeight(Node* node) {
         int leftHeight = getHeight(node->left);
@@ -103,29 +99,96 @@ private:
 
         int balance = getBalanceFactor(node);
 
-        //This condition checks if the left subtree of the current node is taller (balance factor > 1) and the new data to be
-        //inserted is smaller than the data in the left child.
+        // This condition checks if the left subtree of the current node is taller (balance factor > 1) and the new data to be
+        // inserted is smaller than the data in the left child.
         if (balance > 1 && data < node->left->data)
             return rotateRight(node);
 
-        //This condition checks if the right subtree of the current node is taller (balance factor < -1) and the new data to be 
+        // This condition checks if the right subtree of the current node is taller (balance factor < -1) and the new data to be
         // inserted is greater than the data in the right child.
         if (balance < -1 && data > node->right->data)
             return rotateLeft(node);
-            
-        //This condition checks if the left subtree of the current node is taller (balance factor > 1) and the new data to be 
+
+        // This condition checks if the left subtree of the current node is taller (balance factor > 1) and the new data to be
         // inserted is greater than the data in the left child.
         if (balance > 1 && data > node->left->data) {
             node->left = rotateLeft(node->left);
             return rotateRight(node);
         }
-        
-        //This condition checks if the right subtree of the current node is taller (balance factor < -1) and the new data to be 
+
+        // This condition checks if the right subtree of the current node is taller (balance factor < -1) and the new data to be
         // inserted is smaller than the data in the right child.
         if (balance < -1 && data < node->right->data) {
             node->right = rotateRight(node->right);
             return rotateLeft(node);
         }
+        return node;
+    }
+
+    Node* deleteNode(Node* node, int data) {
+        if (node == nullptr)
+            return nullptr;
+
+        if (data < node->data)
+            node->left = deleteNode(node->left, data);
+        else if (data > node->data)
+            node->right = deleteNode(node->right, data);
+        else {
+            // Node to be deleted is found
+
+            // Case 1: Node has no children or only one child
+            if (node->left == nullptr || node->right == nullptr) {
+                Node* temp = node->left ? node->left : node->right;
+
+                if (temp == nullptr) {
+                    // Node has no children
+                    temp = node;
+                    node = nullptr;
+                } else {
+                    // Node has one child
+                    *node = *temp;
+                }
+
+                delete temp;
+            } else {
+                // Case 2: Node has two children
+                Node* temp = findMinValueNode(node->right);
+                node->data = temp->data;
+                node->right = deleteNode(node->right, temp->data);
+            }
+        }
+
+        // If the tree had only one node
+        if (node == nullptr)
+            return nullptr;
+
+        updateHeight(node);
+        updateSize(node);
+
+        int balance = getBalanceFactor(node);
+
+        // Rebalance the tree
+
+        // Left Left Case
+        if (balance > 1 && getBalanceFactor(node->left) >= 0)
+            return rotateRight(node);
+
+        // Left Right Case
+        if (balance > 1 && getBalanceFactor(node->left) < 0) {
+            node->left = rotateLeft(node->left);
+            return rotateRight(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && getBalanceFactor(node->right) <= 0)
+            return rotateLeft(node);
+
+        // Right Left Case
+        if (balance < -1 && getBalanceFactor(node->right) > 0) {
+            node->right = rotateRight(node->right);
+            return rotateLeft(node);
+        }
+
         return node;
     }
 
@@ -164,16 +227,28 @@ private:
         return getNodeByIndex(node->right, index - leftSize - 1);
     }
 
+    Node* findMinValueNode(Node* node) {
+        Node* current = node;
+        while (current->left != nullptr)
+            current = current->left;
+        return current;
+    }
+
 public:
     Node* root;
     IndexedAVLTree() {
         root = nullptr;
-        size=0;
+        size = 0;
     }
 
     void insert(int data) {
         root = insertNode(root, data);
         size++;
+    }
+
+    void deleteValue(int data) {
+        root = deleteNode(root, data);
+        size--;
     }
 
     int getIndexByValue(int data) {
@@ -188,10 +263,11 @@ public:
             return node->data;
         return -1;
     }
-    int  getsize(){
+
+    int getSize() {
         return size;
     }
-    // for a balanced binary tree balanced factor must be either 0 or 1 , -1
+
     int getBalanceFactor(Node* node) {
         if (node == nullptr)
             return 0;
@@ -201,33 +277,27 @@ public:
 
 int main() {
     IndexedAVLTree tree;
-
-    // Inserting nodes into the indexed AVL tree
     tree.insert(4);
-    tree.insert(5);
-    tree.insert(8);
-    tree.insert(11);
-    tree.insert(12);
-    tree.insert(17);
-    tree.insert(18);
-    tree.insert(1);
     tree.insert(2);
-    tree.insert(10);
+    tree.insert(1);
+    tree.insert(3);
+    tree.insert(6);
+    tree.insert(5);
+    tree.insert(7);
 
-    // In-order traversal of the indexed AVL tree
-    for (int i = 1; i <= tree.getsize(); i++) {
-        int value = tree.getValueByIndex(i);
-        cout << value << " ";
-    }
+    cout << "Values in the Indexed AVL Tree: ";
+    for (int i = 1; i <= tree.getSize(); i++)
+        cout << tree.getValueByIndex(i) << " ";
     cout << endl;
 
-    // Searching for a node by value
-    int targetValue = 5;
-    int targetIndex = tree.getIndexByValue(targetValue);
-    cout << "Index of element " << targetValue << ": " << targetIndex << endl;
-    
-    int bal = tree.getBalanceFactor(tree.root);
-    cout<<bal<<endl;
+    tree.deleteValue(3);
 
+    cout << "Values in the Indexed AVL Tree after deleting 3: ";
+    for (int i = 1; i <= tree.getSize(); i++)
+        cout << tree.getValueByIndex(i) << " ";
+    cout << endl;
+    
+    int bf=tree.getBalanceFactor(tree.root);
+    cout<<"Balance factor is :"<<bf<<endl;
     return 0;
 }
